@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ESCAPE THIS HELL</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TRAPPED IN FART HELL! Escape this cursed webpage or fart forever. Level 1 madness.">
+    <meta name="keywords" content="fart, escape room, cursed website, broken html, glitchy, annoying">
+    <meta name="author" content="Fart Demon">
+    <meta property="og:title" content="FART PRISON ESCAPE - LEVEL 1">
+    <meta property="og:description" content="A horrible escape room where every click farts and nothing works. Can you escape Level 1? Doubt it.">
+    <meta property="og:image" content="https://i.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>ESCAPE THIS HELL - LEVEL 1</title>
     <style>
         body {
             background: url('https://i.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif');
@@ -9,6 +19,35 @@
             color: lime;
             overflow: hidden;
             cursor: crosshair;
+            margin: 0;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 0, 0, 0.8);
+            color: yellow;
+            text-align: center;
+            padding: 10px;
+            z-index: 200;
+            animation: glitch 0.5s infinite;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 30px;
+            text-shadow: 2px 2px purple;
+        }
+        header button {
+            background: cyan;
+            color: black;
+            border: 3px dashed magenta;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        header button:hover {
+            background: black;
+            color: cyan;
+            transform: scale(1.2);
         }
         #main {
             position: absolute;
@@ -64,15 +103,41 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        /* Broken CSS */
         .hidden {
             display: block !important;
             visibility: hidden;
             opacity: 1;
         }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: lime;
+            text-align: center;
+            padding: 10px;
+            z-index: 200;
+            font-size: 14px;
+        }
+        footer button {
+            background: red;
+            color: yellow;
+            border: 3px solid cyan;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        footer button:hover {
+            background: purple;
+            color: white;
+            transform: rotate(10deg);
+        }
     </style>
 </head>
 <body>
+    <header class="glitch">
+        <h1>LEVEL 1: FART NIGHTMARE</h1>
+        <button onclick="spawnError()">HELP?</button>
+    </header>
     <div id="main" class="glitch">
         <h1>FIND THE CODE OR DIE</h1>
         <p>Hint: It's not 1234. Or is it? Haha good luck.</p>
@@ -81,32 +146,32 @@
         <button onclick="alert('YOU THOUGHT THIS WOULD HELP?')">CLUE?</button>
         <div id="secret" class="hidden">CODE IS 6969 LOL</div>
     </div>
+    <footer>
+        <p>&copy; 2025 Fart God. All farts reserved.</p>
+        <button onclick="fakeQuit()">QUIT GAME</button>
+    </footer>
 
     <script>
-        // Fart sound array (using free sound URLs or placeholders)
         const fartSounds = [
             new Audio('https://www.soundjay.com/human/fart-01.mp3'),
             new Audio('https://www.soundjay.com/human/fart-02.mp3'),
             new Audio('https://www.soundjay.com/human/fart-03.mp3')
         ];
 
-        // Play random fart sound
         function playFart() {
             const sound = fartSounds[Math.floor(Math.random() * fartSounds.length)];
             sound.play().catch(() => console.log('Audio blocked'));
         }
 
-        // Attach fart sounds to all mouse events
         ['click', 'mousemove', 'mousedown', 'mouseup', 'mouseover', 'mouseout'].forEach(event => {
             document.addEventListener(event, playFart);
         });
 
-        // Buggy code checker
         function checkCode() {
             const input = document.getElementById('codeInput').value;
             if (input === '6969') {
-                alert('YOU ESCAPED! OR DID YOU?');
-                window.location.reload();
+                alert('LEVEL 1 CLEARED! ON TO FARTIER HELL!');
+                window.location.href = 'level01.html';
             } else {
                 alert('WRONG! TRY AGAIN OR SUFFER');
                 document.getElementById('codeInput').value = '';
@@ -117,7 +182,6 @@
             }
         }
 
-        // Spawn annoying popups
         function spawnPopup() {
             const popup = document.createElement('div');
             popup.className = 'popup';
@@ -128,10 +192,25 @@
             setTimeout(() => popup.remove(), 3000);
         }
 
-        // Randomly spawn popups
+        function spawnError() {
+            const error = document.createElement('div');
+            error.className = 'popup';
+            error.innerText = 'ERROR: NO HELP FOR YOU';
+            error.style.left = Math.random() * 80 + 'vw';
+            error.style.top = Math.random() * 80 + 'vh';
+            document.body.appendChild(error);
+            setTimeout(() => error.remove(), 3000);
+            playFart();
+        }
+
+        function fakeQuit() {
+            alert('YOU CAN’T QUIT FART HELL!');
+            for (let i = 0; i < 3; i++) spawnPopup();
+            playFart();
+        }
+
         setInterval(spawnPopup, 2000);
 
-        // Break things randomly
         setInterval(() => {
             document.getElementById('main').style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
             if (Math.random() < 0.3) {
@@ -144,7 +223,6 @@
             }
         }, 4000);
 
-        // Console spam for extra annoyance
         setInterval(() => {
             console.log('YOU WILL NEVER ESCAPE HAHAHA');
         }, 1000);

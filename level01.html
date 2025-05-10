@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TRAPPED IN FART PRISON</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TRAPPED IN FART PRISON! Escape this cursed webpage or fart forever. Level 2 chaos.">
+    <meta name="keywords" content="fart, escape room, cursed website, broken html, glitchy, annoying">
+    <meta name="author" content="Fart Demon">
+    <meta property="og:title" content="FART PRISON ESCAPE - LEVEL 2">
+    <meta property="og:description" content="A horrible escape room where every click farts and nothing works. Can you escape Level 2? Nope.">
+    <meta property="og:image" content="https://i.giphy.com/media/xT9DPCU60aRLykfWve/giphy.gif">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>TRAPPED IN FART PRISON - LEVEL 2</title>
     <style>
         body {
             background: url('https://i.giphy.com/media/xT9DPCU60aRLykfWve/giphy.gif') repeat;
@@ -9,7 +19,35 @@
             color: magenta;
             margin: 0;
             overflow: scroll;
-            cursor: url('https://i.imgur.com/4z2z9.gif'), auto; /* Broken cursor */
+            cursor: url('https://i.imgur.com/4z2z9.gif'), auto;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 255, 255, 0.8);
+            color: black;
+            text-align: center;
+            padding: 10px;
+            z-index: 200;
+            animation: wobble 1s infinite;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 30px;
+            text-shadow: 2px 2px red;
+        }
+        header button {
+            background: lime;
+            color: black;
+            border: 3px dashed purple;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        header button:hover {
+            background: black;
+            color: lime;
+            transform: scale(1.2);
         }
         #container {
             position: absolute;
@@ -91,7 +129,6 @@
             font-size: 12px;
             pointer-events: none;
         }
-        /* Intentionally broken CSS */
         .hidden {
             display: none;
             visibility: visible;
@@ -100,9 +137,36 @@
         * {
             user-select: none;
         }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: magenta;
+            text-align: center;
+            padding: 10px;
+            z-index: 200;
+            font-size: 14px;
+        }
+        footer button {
+            background: green;
+            color: white;
+            border: 3px solid yellow;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        footer button:hover {
+            background: red;
+            color: black;
+            transform: rotate(-10deg);
+        }
     </style>
 </head>
 <body>
+    <header>
+        <h1>LEVEL 2: FART PRISON</h1>
+        <button onclick="spawnError()">HELP?</button>
+    </header>
     <div id="container">
         <div id="puzzle" class="glitch">
             <h1>ESCAPE OR FART FOREVER</h1>
@@ -119,16 +183,21 @@
         <div class="clue" style="top: 90%; left: 20%;">MAYBE 0000?</div>
         <div class="clue" style="top: 50%; left: 50%;">ACTUAL CODE: 6666</div>
     </div>
+    <footer>
+        <p>&copy; 2025 Fart God. All farts reserved.</p>
+        <button onclick="fakeQuit()">QUIT GAME</button>
+    </footer>
 
     <audio id="fart1" src="https://www.soundjay.com/human/fart-01.mp3"></audio>
     <audio id="fart2" src="https://www.soundjay.com/human/fart-02.mp3"></audio>
     <audio id="fart3" src="https://www.soundjay.com/human/fart-03.mp3"></audio>
+    <audio id="fart4" src="https://www.soundjay.com/human/fart-04.mp3" volume="1.0"></audio>
+    <audio id="fart5" src="https://www.soundjay.com/human/fart-05.mp3" volume="1.0"></audio>
 
     <script>
-        // Fart sound setup
         const farts = [
-            document.getElementById('fart1'),
-            document.getElementById('fart2'),
+            document.getElementById('fart4'),
+            document.getElementById('fart5'),
             document.getElementById('fart3')
         ];
 
@@ -138,18 +207,15 @@
             fart.play().catch(() => console.log('Fart blocked'));
         }
 
-        // Fart on every mouse event
         ['click', 'mousemove', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 'contextmenu'].forEach(event => {
             document.addEventListener(event, playFart);
         });
 
-        // Buggy code checker
         function checkCode() {
             const code = document.getElementById('codeBox').value;
             if (code === '6666') {
-                alert('YOU WIN! JK, YOU LOSE.');
-                document.body.innerHTML = '<h1 style="color:red;font-size:100px;">GAME OVER</h1>';
-                setTimeout(() => window.location.reload(), 2000);
+                alert('LEVEL 2 CLEARED! WELCOME TO FART HELL!');
+                window.location.href = 'level02.html';
             } else {
                 alert('WRONG! FART MORE!');
                 document.getElementById('codeBox').value = 'NOPE';
@@ -159,7 +225,6 @@
             }
         }
 
-        // Break the page more
         function breakPage() {
             document.getElementById('puzzle').style.left = Math.random() * 80 + '%';
             document.getElementById('puzzle').style.top = Math.random() * 80 + '%';
@@ -170,7 +235,6 @@
             }, 1500);
         }
 
-        // Spawn error popups
         function spawnError() {
             const error = document.createElement('div');
             error.className = 'error';
@@ -179,9 +243,15 @@
             error.style.top = Math.random() * 80 + 'vh';
             document.body.appendChild(error);
             setTimeout(() => error.remove(), 2000);
+            playFart();
         }
 
-        // Random chaos
+        function fakeQuit() {
+            alert('NO ESCAPE FROM FART PRISON!');
+            for (let i = 0; i < 3; i++) spawnError();
+            playFart();
+        }
+
         setInterval(() => {
             const puzzle = document.getElementById('puzzle');
             puzzle.style.transform = `skew(${Math.random() * 20 - 10}deg)`;
@@ -195,7 +265,6 @@
             }
         }, 3000);
 
-        // Annoying popups
         setInterval(() => {
             const popup = document.createElement('div');
             popup.className = 'error';
@@ -207,12 +276,10 @@
             setTimeout(() => popup.remove(), 2500);
         }, 1500);
 
-        // Spam console
         setInterval(() => {
             console.log('FART PRISONER #' + Math.floor(Math.random() * 1000));
         }, 500);
 
-        // Randomly move clues
         setInterval(() => {
             document.querySelectorAll('.clue').forEach(clue => {
                 clue.style.left = Math.random() * 80 + '%';
