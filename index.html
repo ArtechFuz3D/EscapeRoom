@@ -143,6 +143,393 @@
         <p>Hint: It's not 1234. Or is it? Haha good luck.</p>
         <input id="codeInput" type="text" placeholder="ENTER CODE" maxlength="4">
         <button onclick="checkCode()">SUBMIT</button>
+        <button onclick="alert('YOU THOUGHT THIS WOULD HELP?'); playFartEffect(1.1, 500);">CLUE?</button>
+        <div id="secret" class="hidden">CODE IS 6969 LOL</div>
+    </div>
+    <footer>
+        <p>© 2025 Fart God. All farts reserved.</p>
+        <button onclick="fakeQuit()">QUIT GAME</button>
+    </footer>
+    <!-- Preload important audio -->
+    <audio id="background" src="./fartcomedylq.mp3" loop preload="auto"></audio>
+    <audio id="fart1" src="https://www.soundjay.com/human/fart-01.mp3" preload="auto"></audio>
+    <audio id="fart2" src="https://www.soundjay.com/human/fart-02.mp3" preload="auto"></audio>
+    <audio id="fart3" src="https://www.soundjay.com/human/fart-03.mp3" preload="auto"></audio>
+
+    <script>
+        // Audio setup
+        const fartSounds = [
+            document.getElementById('fart1'),
+            document.getElementById('fart2'),
+            document.getElementById('fart3')
+        ];
+        const backgroundAudio = document.getElementById('background');
+        let audioContext = null;
+        let gainNode = null;
+        let isAudioStarted = false;
+        let audioThrottleTimeout = null;
+        let lastFartTime = 0;
+
+        // Initialize audio with user interaction
+        function startBackgroundAudio() {
+            if (isAudioStarted) return;
+            
+            try {
+                // Create audio context
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Set up gain node for volume control
+                gainNode = audioContext.createGain();
+                gainNode.gain.value = 0.5; // Set initial volume
+                
+                // Connect background audio to context
+                const source = audioContext.createMediaElementSource(backgroundAudio);
+                source.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Play the background audio with forced autoplay
+                backgroundAudio.volume = 0.5;
+                backgroundAudio.loop = true;
+                
+                const playPromise = backgroundAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log("Background audio playing successfully");
+                    }).catch(err => {
+                        console.log('Background audio failed to autoplay:', err);
+                        // Create a play button as fallback if autoplay fails
+                        createPlayButton();
+                    });
+                }
+                
+                // Mark audio as started
+                isAudioStarted = true;
+                console.log("Audio context successfully initialized!");
+            } catch (error) {
+                console.error("Audio initialization failed:", error);
+                createPlayButton(); // Fallback
+            }
+        }
+        
+        // Create a play button if autoplay fails (browser policy)
+        function createPlayButton() {
+            if (document.getElementById('playButton')) return;
+            
+            const playBtn = document.createElement('button');
+            playBtn.id = 'playButton';
+            playBtn.innerText = 'START FART MUSIC';
+            playBtn.style.position = 'fixed';
+            playBtn.style.top = '100px';
+            playBtn.style.left = '50%';
+            playBtn.style.transform = 'translateX(-50%)';
+            playBtn.style.zIndex = '1000';
+            playBtn.style.background = 'red';
+            playBtn.style.color = 'yellow';
+            playBtn.style.fontSize = '24px';
+            playBtn.style.border = '5px dashed green';
+            playBtn.style.padding = '15px';
+            
+            playBtn.onclick = function() {
+                backgroundAudio.play().then(() => {
+                    console.log("Background audio playing after user interaction");
+                    this.remove();
+                }).catch(err => {
+                    console.error("Background audio still failed:", err);
+                });
+            };
+            
+            document.body.appendChild(playBtn);
+        }
+
+        // Function to play fart sound with rate adjustment
+        function playFartEffect(rate, duration) {
+            // Throttle fart sounds to prevent audio overload
+            const now = Date.now();
+            if (now - lastFartTime < 200) return; // Limit to one fart every 200ms
+            lastFartTime = now;
+            
+            // Play random fart sound
+            const sound = fartSounds[Math.floor(Math.random() * fartSounds.length)];
+            if (sound.paused) {
+                sound.playbackRate = rate || 1.0;
+                sound.volume = 0.7; // Slightly lower volume for farts
+                sound.play().catch(err => console.log('Fart sound failed:', err));
+            }
+            
+            // Adjust background audio if it's playing
+            if (isAudioStarted && backgroundAudio && !backgroundAudio.paused) {
+                backgroundAudio.playbackRate = rate || 1.0;
+                
+                // Reset rate after duration if specified
+                if (duration) {
+                    clearTimeout(audioThrottleTimeout);
+                    audioThrottleTimeout = setTimeout(() => {
+                        backgroundAudio.playbackRate = 1.0;
+                    }, duration);
+                }
+            } else if (isAudioStarted && backgroundAudio && backgroundAudio.paused) {
+                // Try to restart the background audio if it's paused
+                backgroundAudio.play().catch(err => {
+                    console.log('Background restart failed (browser policy)');
+                    // Only create button if autoplay keeps failing
+                    if (document.querySelectorAll('.popup').length < 3) {
+                        createPlayButton();
+                    }
+                });
+            }
+        }
+
+        // Throttled event for mouse movements
+        function throttledPlayFart() {
+            if (audioThrottleTimeout) return;
+            audioThrottleTimeout = setTimeout(() => {
+                playFartEffect();
+                audioThrottleTimeout = null;
+            }, 500); // Limit frequency
+        }
+
+        // Add event listeners with appropriate handlers
+        document.addEventListener('click', () => {
+            startBackgroundAudio();
+            playFartEffect();
+        });
+        
+        document.addEventListener('mousemove', throttledPlayFart);
+        
+        ['mousedown', 'mouseup'].forEach(event => {
+            document.addEventListener(event, () => {
+                startBackgroundAudio();
+                playFartEffect();
+            });
+        });
+
+        // Mouseover/out only on interactive elements
+        ['button', 'input'].forEach(selector => {
+            document.querySelectorAll(selector).forEach(element => {
+                element.addEventListener('mouseover', () => playFartEffect());
+                element.addEventListener('mouseout', () => playFartEffect(0.8, 300));
+            });
+        });
+
+        // Check code function
+        function checkCode() {
+            const input = document.getElementById('codeInput').value;
+            if (input === '6969') {
+                playFartEffect(1.5, 2000);
+                alert('LEVEL 1 CLEARED! ON TO FARTIER HELL!');
+                window.location.href = 'level02.html'; // Fixed to go to level 2
+            } else {
+                playFartEffect(0.8, 1000);
+                alert('WRONG! TRY AGAIN OR SUFFER');
+                document.getElementById('codeInput').value = '';
+                document.body.style.background = 'red';
+                setTimeout(() => {
+                    document.body.style.background = '';
+                }, 500);
+            }
+        }
+
+        // Popup spawning function
+        function spawnPopup() {
+            const popup = document.createElement('div');
+            popup.className = 'popup';
+            popup.innerText = 'YOU CANNOT ESCAPE';
+            popup.style.left = Math.random() * 80 + 'vw';
+            popup.style.top = Math.random() * 80 + 'vh';
+            document.body.appendChild(popup);
+            setTimeout(() => popup.remove(), 3000);
+        }
+
+        // Error popup function
+        function spawnError() {
+            const error = document.createElement('div');
+            error.className = 'popup';
+            error.innerText = 'ERROR: NO HELP FOR YOU';
+            error.style.left = Math.random() * 80 + 'vw';
+            error.style.top = Math.random() * 80 + 'vh';
+            document.body.appendChild(error);
+            setTimeout(() => error.remove(), 3000);
+            playFartEffect(1.2, 500);
+        }
+
+        // Fake quit function
+        function fakeQuit() {
+            alert('YOU CAN\'T QUIT FART HELL!');
+            for (let i = 0; i < 3; i++) spawnPopup();
+            playFartEffect(0.9, 500);
+        }
+
+        // Set intervals for random events
+        setInterval(spawnPopup, 5000); // Less frequent popups
+
+        // Random glitches interval
+        setInterval(() => {
+            document.getElementById('main').style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+            
+            // Random input glitches (less frequent)
+            if (Math.random() < 0.2) {
+                document.getElementById('codeInput').value = 'ERROR';
+                document.getElementById('codeInput').disabled = true;
+                setTimeout(() => {
+                    document.getElementById('codeInput').disabled = false;
+                    document.getElementById('codeInput').value = '';
+                }, 1000);
+            }
+            
+            // Random audio effects (less frequent)
+            if (Math.random() < 0.1) {
+                playFartEffect(0.7 + Math.random() * 0.6, 1000);
+            }
+        }, 2000); // Less frequent glitches
+    </script>
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TRAPPED IN FART HELL! Escape this cursed webpage or fart forever. Level 1 madness.">
+    <meta name="keywords" content="fart, escape room, cursed website, broken html, glitchy, annoying">
+    <meta name="author" content="Fart Demon">
+    <meta property="og:title" content="FART PRISON ESCAPE - LEVEL 1">
+    <meta property="og:description" content="A horrible escape room where every click farts and nothing works. Can you escape Level 1? Doubt it.">
+    <meta property="og:image" content="https://i.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>ESCAPE THIS HELL - LEVEL 1</title>
+    <style>
+        body {
+            background: url('https://i.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif');
+            font-family: Comic Sans MS, cursive;
+            color: lime;
+            overflow: hidden;
+            cursor: crosshair;
+            margin: 0;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 0, 0, 0.8);
+            color: yellow;
+            text-align: center;
+            padding: 10px;
+            z-index: 200;
+            animation: glitch 0.5s infinite;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 30px;
+            text-shadow: 2px 2px purple;
+        }
+        header button {
+            background: cyan;
+            color: black;
+            border: 3px dashed magenta;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        header button:hover {
+            background: black;
+            color: cyan;
+            transform: scale(1.2);
+        }
+        #main {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: rotate(5deg);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border: 5px solid hotpink;
+            z-index: 10;
+        }
+        .glitch {
+            animation: glitch 0.5s infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-5px, 5px); }
+            40% { transform: translate(5px, -5px); }
+            60% { transform: translate(-5px, 0); }
+            80% { transform: translate(5px, 5px); }
+            100% { transform: translate(0); }
+        }
+        button {
+            background: yellow;
+            color: purple;
+            font-size: 20px;
+            border: 3px dashed red;
+            padding: 10px;
+            margin: 10px;
+            transform: skew(20deg);
+        }
+        button:hover {
+            background: blue;
+            color: white;
+            transform: scale(1.5) skew(-10deg);
+        }
+        #codeInput {
+            background: black;
+            color: cyan;
+            border: 2px solid green;
+            font-size: 18px;
+        }
+        .popup {
+            position: fixed;
+            background: red;
+            color: yellow;
+            padding: 10px;
+            border: 5px solid black;
+            z-index: 100;
+            animation: spin 2s infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .hidden {
+            display: block !important;
+            visibility: hidden;
+            opacity: 1;
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: lime;
+            text-align: center;
+            padding: 10px;
+            z-index: 200;
+            font-size: 14px;
+        }
+        footer button {
+            background: red;
+            color: yellow;
+            border: 3px solid cyan;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        footer button:hover {
+            background: purple;
+            color: white;
+            transform: rotate(10deg);
+        }
+    </style>
+</head>
+<body>
+    <header class="glitch">
+        <h1>LEVEL 1: FART NIGHTMARE</h1>
+        <button onclick="spawnError()">HELP?</button>
+    </header>
+    <div id="main" class="glitch">
+        <h1>FIND THE CODE OR DIE</h1>
+        <p>Hint: It's not 1234. Or is it? Haha good luck.</p>
+        <input id="codeInput" type="text" placeholder="ENTER CODE" maxlength="4">
+        <button onclick="checkCode()">SUBMIT</button>
         <button onclick="alert('YOU THOUGHT THIS WOULD HELP?'); adjustAudio(1.1, 500);">CLUE?</button>
         <div id="secret" class="hidden">CODE IS 6969 LOL</div>
     </div>
@@ -264,4 +651,4 @@
         }, 1000);
     </script>
 </body>
-</html>
+</html> -->
