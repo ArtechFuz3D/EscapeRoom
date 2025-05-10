@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TRAPPED IN FART HELL! Escape this cursed webpage or fart forever. Good luck, loser.">
+    <meta name="keywords" content="fart, escape room, cursed website, broken html, glitchy, annoying">
+    <meta name="author" content="Fart Demon">
+    <meta property="og:title" content="FART PRISON ESCAPE">
+    <meta property="og:description" content="A horrible escape room where every click farts and nothing works. Can you escape? Probably not.">
+    <meta property="og:image" content="https://i.giphy.com/media/3o7TKsQ8J3eQ6kZ4y4/giphy.gif">
+    <meta property="og:type" content="website">
+    <title>FART HELL: NO ESCAPE</title>
+    <style>
+        body {
+            background: url('https://i.giphy.com/media/13zeE9HAi7IhO/giphy.gif') repeat;
+            font-family: "Arial Black", sans-serif;
+            color: #ff00ff;
+            margin: 0;
+            overflow: hidden;
+            cursor: url('https://i.imgur.com/8k9z2.gif'), pointer; /* Broken pixel cursor */
+        }
+        #game {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            top: -25%;
+            left: -25%;
+            background: rgba(255, 0, 0, 0.2);
+            z-index: 1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.2; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.2; }
+        }
+        #puzzle {
+            position: fixed;
+            top: 25%;
+            left: 35%;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border: 8px groove cyan;
+            box-shadow: 0 0 30px lime;
+            z-index: 100;
+            animation: shake 0.3s infinite;
+        }
+        @keyframes shake {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(-10px, 10px); }
+            50% { transform: translate(10px, -10px); }
+            75% { transform: translate(-10px, -10px); }
+            100% { transform: translate(0, 0); }
+        }
+        h1 {
+            font-size: 50px;
+            text-shadow: 3px 3px yellow, -3px -3px blue;
+            animation: flicker 0.1s infinite;
+        }
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        p {
+            font-size: 18px;
+            color: lime;
+        }
+        .button {
+            background: radial-gradient(circle, purple, orange);
+            color: white;
+            font-size: 22px;
+            border: 6px double green;
+            padding: 8px 15px;
+            margin: 8px;
+            display: inline-block;
+            transform: skew(-15deg);
+            transition: all 0.2s;
+        }
+        .button:hover {
+            transform: scale(0.7) rotate(360deg);
+            background: black;
+            border-color: red;
+            color: cyan;
+        }
+        #codeInput {
+            background: black;
+            color: yellow;
+            border: 4px solid pink;
+            font-size: 20px;
+            width: 120px;
+            text-align: center;
+            filter: blur(2px);
+        }
+        .meta-clue {
+            position: fixed;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 10px;
+            z-index: 9999;
+            pointer-events: none;
+            animation: float 3s infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+        .error {
+            position: fixed;
+            background: url('https://i.giphy.com/media/26BRzozg4TCas1YfS/giphy.gif');
+            color: white;
+            padding: 15px;
+            font-size: 25px;
+            border: 5px solid black;
+            z-index: 1000;
+            animation: spin 0.8s infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Broken CSS */
+        .broken {
+            display: inline !important;
+            visibility: hidden;
+            opacity: 1;
+            position: absolute;
+            left: -9999px;
+        }
+        * {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="game">
+        <div id="puzzle">
+            <h1>FART HELL AWAITS</h1>
+            <p>ENTER THE CODE OR FART ETERNALLY. IT’S 4 DIGITS. META HINT: CHECK THE SOURCE.</p>
+            <input id="codeInput" type="text" placeholder="CODE??" maxlength="4">
+            <div>
+                <span class="button" onclick="checkCode()">SUBMIT</span>
+                <span class="button" onclick="metaTroll()">META?</span>
+                <span class="button" onclick="fakeEscape()">ESCAPE</span>
+            </div>
+            <div id="fakeHint" class="broken">LOL CODE IS 9999</div>
+        </div>
+        <div class="meta-clue" style="top: 5%; left: 10%;">SOURCE CODE SAYS 7777</div>
+        <div class="meta-clue" style="top: 85%; left: 70%;">INSPECT ELEMENT: 1234?</div>
+        <div class="meta-clue" style="top: 50%; left: 50%;">REAL CODE: 5555</div>
+    </div>
+
+    <audio id="fart1" src="https://www.soundjay.com/human/fart-01.mp3" volume="1.0"></audio>
+    <audio id="fart2" src="https://www.soundjay.com/human/fart-02.mp3" volume="1.0"></audio>
+    <audio id="fart3" src="https://www.soundjay.com/human/fart-03.mp3" volume="1.0"></audio>
+    <audio id="fart4" src="https://www.soundjay.com/human/fart-04.mp3" volume="1.0"></audio>
+
+    <script>
+        // Fart sound setup
+        const farts = [
+            document.getElementById('fart1'),
+            document.getElementById('fart2'),
+            document.getElementById('fart3'),
+            document.getElementById('fart4')
+        ];
+        farts.forEach(f => f.volume = 1.0); // MAX VOLUME FARTS
+
+        function playFart() {
+            const fart = farts[Math.floor(Math.random() * farts.length)];
+            fart.currentTime = 0;
+            fart.play().catch(() => console.log('Fart muted'));
+        }
+
+        // Fart on ALL mouse events
+        ['click', 'mousemove', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 'contextmenu', 'dblclick'].forEach(event => {
+            document.addEventListener(event, playFart);
+        });
+
+        // Buggy code checker
+        function checkCode() {
+            const code = document.getElementById('codeInput').value;
+            if (code === '5555') {
+                alert('YOU ESCAPED! OR DID YOU? FART GOD WINS.');
+                document.body.innerHTML = '<h1 style="color:yellow;font-size:120px;text-align:center;">FART GOD LAUGHS</h1>';
+                for (let i = 0; i < 10; i++) spawnError();
+                setTimeout(() => window.location.href = 'about:blank', 3000);
+            } else {
+                alert('WRONG CODE, FART SLAVE!');
+                document.getElementById('codeInput').value = 'FART';
+                document.body.style.transform = `rotate(${Math.random() * 10 - 5}deg)`;
+                setTimeout(() => document.body.style.transform = '', 500);
+                spawnError();
+                playFart();
+            }
+        }
+
+        // Meta troll button
+        function metaTroll() {
+            alert('META HINT: I LIED. CHECK THE CONSOLE.');
+            console.log('FAKE CODE: 0000. REAL CODE IS IN THE DOM... OR IS IT?');
+            document.getElementById('puzzle').style.top = Math.random() * 70 + '%';
+            document.getElementById('puzzle').style.left = Math.random() * 70 + '%';
+            document.getElementById('codeInput').disabled = true;
+            setTimeout(() => document.getElementById('codeInput').disabled = false, 2000);
+            spawnError();
+        }
+
+        // Fake escape button
+        function fakeEscape() {
+            alert('NICE TRY, FART PRISONER!');
+            document.body.style.filter = 'hue-rotate(180deg)';
+            setTimeout(() => document.body.style.filter = '', 1000);
+            for (let i = 0; i < 5; i++) spawnError();
+        }
+
+        // Spawn error popups
+        function spawnError() {
+            const error = document.createElement('div');
+            error.className = 'error';
+            error.innerText = 'FATAL ERROR ' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            error.style.left = Math.random() * 80 + 'vw';
+            error.style.top = Math.random() * 80 + 'vh';
+            document.body.appendChild(error);
+            setTimeout(() => error.remove(), 2500);
+        }
+
+        // Chaos loop
+        setInterval(() => {
+            const puzzle = document.getElementById('puzzle');
+            puzzle.style.filter = `blur(${Math.random() * 3}px)`;
+            if (Math.random() < 0.5) {
+                document.getElementById('codeInput').value = 'HACKED';
+                document.getElementById('codeInput').disabled = true;
+                setTimeout(() => {
+                    document.getElementById('codeInput').disabled = false;
+                    document.getElementById('codeInput').value = '';
+                }, 1000);
+            }
+            if (Math.random() < 0.3) {
+                document.body.style.background = 'black';
+                setTimeout(() => document.body.style.background = '', 200);
+            }
+        }, 2000);
+
+        // Annoying meta popups
+        setInterval(() => {
+            const popup = document.createElement('div');
+            popup.className = 'error';
+            popup.style.background = 'green';
+            popup.innerText = 'FART GOD WATCHES';
+            popup.style.left = Math.random() * 80 + 'vw';
+            popup.style.top = Math.random() * 80 + 'vh';
+            document.body.appendChild(popup);
+            setTimeout(() => popup.remove(), 2000);
+        }, 1000);
+
+        // Move clues randomly
+        setInterval(() => {
+            document.querySelectorAll('.meta-clue').forEach(clue => {
+                clue.style.left = Math.random() * 80 + '%';
+                clue.style.top = Math.random() * 80 + '%';
+            });
+        }, 4000);
+
+        // Console spam
+        setInterval(() => {
+            console.log('FART GOD DEMANDS CODE: ' + ['0000', '1234', '7777', '9999'][Math.floor(Math.random() * 4)]);
+        }, 300);
+
+        // Meta comment in source
+        // SECRET CODE IS 5555, BUT YOU'LL NEVER FIND IT, LOSER!
+    </script>
+</body>
+</html>
