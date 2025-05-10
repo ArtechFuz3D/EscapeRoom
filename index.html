@@ -143,20 +143,46 @@
         <p>Hint: It's not 1234. Or is it? Haha good luck.</p>
         <input id="codeInput" type="text" placeholder="ENTER CODE" maxlength="4">
         <button onclick="checkCode()">SUBMIT</button>
-        <button onclick="alert('YOU THOUGHT THIS WOULD HELP?')">CLUE?</button>
+        <button onclick="alert('YOU THOUGHT THIS WOULD HELP?'); adjustAudio(1.1, 500);">CLUE?</button>
         <div id="secret" class="hidden">CODE IS 6969 LOL</div>
     </div>
     <footer>
-        <p>&copy; 2025 Fart God. All farts reserved.</p>
+        <p>© 2025 Fart God. All farts reserved.</p>
         <button onclick="fakeQuit()">QUIT GAME</button>
     </footer>
+    <audio id="background" src="fartcomedylq.mp3" loop></audio>
+    <audio id="fart1" src="https://www.soundjay.com/human/fart-01.mp3"></audio>
+    <audio id="fart2" src="https://www.soundjay.com/human/fart-02.mp3"></audio>
+    <audio id="fart3" src="https://www.soundjay.com/human/fart-03.mp3"></audio>
 
     <script>
         const fartSounds = [
-            new Audio('https://www.soundjay.com/human/fart-01.mp3'),
-            new Audio('https://www.soundjay.com/human/fart-02.mp3'),
-            new Audio('https://www.soundjay.com/human/fart-03.mp3')
+            document.getElementById('fart1'),
+            document.getElementById('fart2'),
+            document.getElementById('fart3')
         ];
+        let audioContext, sourceNode, backgroundAudio = document.getElementById('background');
+        let isAudioStarted = false;
+
+        function startBackgroundAudio() {
+            if (isAudioStarted) return;
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            sourceNode = audioContext.createMediaElementSource(backgroundAudio);
+            sourceNode.connect(audioContext.destination);
+            backgroundAudio.play().catch(() => console.log('Background audio blocked'));
+            sourceNode.playbackRate.value = 1.0; // Level 1 baseline
+            isAudioStarted = true;
+        }
+
+        function adjustAudio(rate, duration) {
+            if (!isAudioStarted) return;
+            sourceNode.playbackRate.value = rate;
+            if (duration) {
+                setTimeout(() => {
+                    sourceNode.playbackRate.value = 1.0;
+                }, duration);
+            }
+        }
 
         function playFart() {
             const sound = fartSounds[Math.floor(Math.random() * fartSounds.length)];
@@ -164,15 +190,20 @@
         }
 
         ['click', 'mousemove', 'mousedown', 'mouseup', 'mouseover', 'mouseout'].forEach(event => {
-            document.addEventListener(event, playFart);
+            document.addEventListener(event, () => {
+                startBackgroundAudio();
+                playFart();
+            });
         });
 
         function checkCode() {
             const input = document.getElementById('codeInput').value;
             if (input === '6969') {
+                adjustAudio(1.5, 2000);
                 alert('LEVEL 1 CLEARED! ON TO FARTIER HELL!');
                 window.location.href = 'level01.html';
             } else {
+                adjustAudio(0.8, 1000);
                 alert('WRONG! TRY AGAIN OR SUFFER');
                 document.getElementById('codeInput').value = '';
                 document.body.style.background = 'red';
@@ -200,12 +231,14 @@
             error.style.top = Math.random() * 80 + 'vh';
             document.body.appendChild(error);
             setTimeout(() => error.remove(), 3000);
+            adjustAudio(1.2, 500);
             playFart();
         }
 
         function fakeQuit() {
             alert('YOU CAN’T QUIT FART HELL!');
             for (let i = 0; i < 3; i++) spawnPopup();
+            adjustAudio(0.9, 500);
             playFart();
         }
 
@@ -220,6 +253,9 @@
                     document.getElementById('codeInput').disabled = false;
                     document.getElementById('codeInput').value = '';
                 }, 1000);
+            }
+            if (Math.random() < 0.1) {
+                adjustAudio(0.7 + Math.random() * 0.6, 1000);
             }
         }, 4000);
 

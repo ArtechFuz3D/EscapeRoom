@@ -5,11 +5,13 @@ Welcome to **FART HELL**, a cursed, glitchy, and utterly infuriating web-based e
 ## About the Game
 
 FART HELL is a deliberately broken HTML escape room with three levels of chaos:
+
 - **Level 1: Fart Nightmare** (`index.html`, Code: 6969)
 - **Level 2: Fart Prison** (`level01.html`, Code: 6666)
 - **Level 3: Fart Hell** (`level02.html`, Code: 5555)
 
 Each level challenges you to enter a 4-digit code to "escape" (spoiler: you never really escape). Expect:
+
 - Fart sounds on *every* mouse event (click, move, hover, you name it).
 - Glitchy animations, broken CSS, and seizure-inducing GIF backgrounds.
 - Trolling clues, fake hints, and error popups that spin and taunt.
@@ -27,9 +29,11 @@ Winning a level loads the next one. Beat Level 3? You’re dumped back to Level 
 ## Installation (for Local Play)
 
 1. Clone this repo:
+
    ```bash
    git clone https://github.com/artechfuz3d/EscapeRoom.git
    ```
+
 2. Open `index.html` in a browser. No server needed—this is pure HTML/JS/CSS garbage.
 3. Ensure you have fart sound files (e.g., `fart-01.mp3`, `fart-02.mp3`, `fart-03.mp3`) in the right directory or replace placeholder URLs (`https://www.soundjay.com/human/fart-0X.mp3`) with local files.
 
@@ -51,6 +55,7 @@ Winning a level loads the next one. Beat Level 3? You’re dumped back to Level 
 ## Contributing
 
 This is a trash fire by design, but if you want to add more farts, glitches, or trolling, submit a pull request. Ideas:
+
 - More fart sounds (check [ZapSplat](https://www.zapsplat.com/) for 170+ free farts).
 - New levels with even dumber mechanics.
 - A “leaderboard” that just insults players.
@@ -69,3 +74,5 @@ This is a trash fire by design, but if you want to add more farts, glitches, or 
 ---
 
 **FART GOD IS WATCHING. ESCAPE OR SUFFER.** 💦
+
+Background Music Credits: <https://www.youtube.com/playlist?list=PL170TfEhZz-_GstI3bsghBfuD-u8nlHHD>

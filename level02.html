@@ -207,14 +207,14 @@
         <div class="meta-clue" style="top: 50%; left: 50%;">REAL CODE: 5555</div>
     </div>
     <footer>
-        <p>&copy; 2025 Fart God. All farts reserved.</p>
+        <p>© 2025 Fart God. All farts reserved.</p>
         <button onclick="fakeQuit()">QUIT GAME</button>
     </footer>
-
+    <audio id="background" src="fartcomedylq.mp3" loop></audio>
     <audio id="fart1" src="https://www.soundjay.com/human/fart-01.mp3" volume="1.0"></audio>
     <audio id="fart2" src="https://www.soundjay.com/human/fart-02.mp3" volume="1.0"></audio>
     <audio id="fart3" src="https://www.soundjay.com/human/fart-03.mp3" volume="1.0"></audio>
-    <audio id="fart4" src="https://www.soundjay.com/human/fart-04.mp3" volume="1.0"></audio>
+    <audio id="fart4" src="https://www.soundjay.com/human/fart-01.mp3" volume="1.0"></audio>
 
     <script>
         const farts = [
@@ -224,6 +224,28 @@
             document.getElementById('fart4')
         ];
         farts.forEach(f => f.volume = 1.0);
+        let audioContext, sourceNode, backgroundAudio = document.getElementById('background');
+        let isAudioStarted = false;
+
+        function startBackgroundAudio() {
+            if (isAudioStarted) return;
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            sourceNode = audioContext.createMediaElementSource(backgroundAudio);
+            sourceNode.connect(audioContext.destination);
+            backgroundAudio.play().catch(() => console.log('Background audio blocked'));
+            sourceNode.playbackRate.value = 1.2; // Level 3 baseline
+            isAudioStarted = true;
+        }
+
+        function adjustAudio(rate, duration) {
+            if (!isAudioStarted) return;
+            sourceNode.playbackRate.value = rate;
+            if (duration) {
+                setTimeout(() => {
+                    sourceNode.playbackRate.value = 1.2;
+                }, duration);
+            }
+        }
 
         function playFart() {
             const fart = farts[Math.floor(Math.random() * farts.length)];
@@ -232,15 +254,20 @@
         }
 
         ['click', 'mousemove', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 'contextmenu', 'dblclick'].forEach(event => {
-            document.addEventListener(event, playFart);
+            document.addEventListener(event, () => {
+                startBackgroundAudio();
+                playFart();
+            });
         });
 
         function checkCode() {
             const code = document.getElementById('codeInput').value;
             if (code === '5555') {
+                adjustAudio(1.5, 2000);
                 alert('LEVEL 3 CLEARED! FART GOD MOCKS YOU! BACK TO LEVEL 1!');
                 window.location.href = 'index.html';
             } else {
+                adjustAudio(0.8, 1000);
                 alert('WRONG CODE, FART SLAVE!');
                 document.getElementById('codeInput').value = 'FART';
                 document.body.style.transform = `rotate(${Math.random() * 10 - 5}deg)`;
@@ -257,6 +284,7 @@
             document.getElementById('puzzle').style.left = Math.random() * 70 + '%';
             document.getElementById('codeInput').disabled = true;
             setTimeout(() => document.getElementById('codeInput').disabled = false, 2000);
+            adjustAudio(1.2, 500);
             spawnError();
         }
 
@@ -265,6 +293,7 @@
             document.body.style.filter = 'hue-rotate(180deg)';
             setTimeout(() => document.body.style.filter = '', 1000);
             for (let i = 0; i < 5; i++) spawnError();
+            adjustAudio(0.9, 500);
         }
 
         function spawnError() {
@@ -275,12 +304,14 @@
             error.style.top = Math.random() * 80 + 'vh';
             document.body.appendChild(error);
             setTimeout(() => error.remove(), 2500);
+            adjustAudio(1.2, 500);
             playFart();
         }
 
         function fakeQuit() {
             alert('YOU’RE TRAPPED FOREVER!');
             for (let i = 0; i < 5; i++) spawnError();
+            adjustAudio(0.9, 500);
             playFart();
         }
 
@@ -298,6 +329,9 @@
             if (Math.random() < 0.3) {
                 document.body.style.background = 'black';
                 setTimeout(() => document.body.style.background = '', 200);
+            }
+            if (Math.random() < 0.1) {
+                adjustAudio(0.7 + Math.random() * 0.6, 1000);
             }
         }, 2000);
 
