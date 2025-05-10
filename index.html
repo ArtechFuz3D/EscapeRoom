@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ESCAPE THIS HELL</title>
+    <style>
+        body {
+            background: url('https://i.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif');
+            font-family: Comic Sans MS, cursive;
+            color: lime;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+        #main {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: rotate(5deg);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border: 5px solid hotpink;
+            z-index: 10;
+        }
+        .glitch {
+            animation: glitch 0.5s infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-5px, 5px); }
+            40% { transform: translate(5px, -5px); }
+            60% { transform: translate(-5px, 0); }
+            80% { transform: translate(5px, 5px); }
+            100% { transform: translate(0); }
+        }
+        button {
+            background: yellow;
+            color: purple;
+            font-size: 20px;
+            border: 3px dashed red;
+            padding: 10px;
+            margin: 10px;
+            transform: skew(20deg);
+        }
+        button:hover {
+            background: blue;
+            color: white;
+            transform: scale(1.5) skew(-10deg);
+        }
+        #codeInput {
+            background: black;
+            color: cyan;
+            border: 2px solid green;
+            font-size: 18px;
+        }
+        .popup {
+            position: fixed;
+            background: red;
+            color: yellow;
+            padding: 10px;
+            border: 5px solid black;
+            z-index: 100;
+            animation: spin 2s infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Broken CSS */
+        .hidden {
+            display: block !important;
+            visibility: hidden;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="main" class="glitch">
+        <h1>FIND THE CODE OR DIE</h1>
+        <p>Hint: It's not 1234. Or is it? Haha good luck.</p>
+        <input id="codeInput" type="text" placeholder="ENTER CODE" maxlength="4">
+        <button onclick="checkCode()">SUBMIT</button>
+        <button onclick="alert('YOU THOUGHT THIS WOULD HELP?')">CLUE?</button>
+        <div id="secret" class="hidden">CODE IS 6969 LOL</div>
+    </div>
+
+    <script>
+        // Fart sound array (using free sound URLs or placeholders)
+        const fartSounds = [
+            new Audio('https://www.soundjay.com/human/fart-01.mp3'),
+            new Audio('https://www.soundjay.com/human/fart-02.mp3'),
+            new Audio('https://www.soundjay.com/human/fart-03.mp3')
+        ];
+
+        // Play random fart sound
+        function playFart() {
+            const sound = fartSounds[Math.floor(Math.random() * fartSounds.length)];
+            sound.play().catch(() => console.log('Audio blocked'));
+        }
+
+        // Attach fart sounds to all mouse events
+        ['click', 'mousemove', 'mousedown', 'mouseup', 'mouseover', 'mouseout'].forEach(event => {
+            document.addEventListener(event, playFart);
+        });
+
+        // Buggy code checker
+        function checkCode() {
+            const input = document.getElementById('codeInput').value;
+            if (input === '6969') {
+                alert('YOU ESCAPED! OR DID YOU?');
+                window.location.reload();
+            } else {
+                alert('WRONG! TRY AGAIN OR SUFFER');
+                document.getElementById('codeInput').value = '';
+                document.body.style.background = 'red';
+                setTimeout(() => {
+                    document.body.style.background = '';
+                }, 500);
+            }
+        }
+
+        // Spawn annoying popups
+        function spawnPopup() {
+            const popup = document.createElement('div');
+            popup.className = 'popup';
+            popup.innerText = 'YOU CANNOT ESCAPE';
+            popup.style.left = Math.random() * 80 + 'vw';
+            popup.style.top = Math.random() * 80 + 'vh';
+            document.body.appendChild(popup);
+            setTimeout(() => popup.remove(), 3000);
+        }
+
+        // Randomly spawn popups
+        setInterval(spawnPopup, 2000);
+
+        // Break things randomly
+        setInterval(() => {
+            document.getElementById('main').style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+            if (Math.random() < 0.3) {
+                document.getElementById('codeInput').value = 'ERROR';
+                document.getElementById('codeInput').disabled = true;
+                setTimeout(() => {
+                    document.getElementById('codeInput').disabled = false;
+                    document.getElementById('codeInput').value = '';
+                }, 1000);
+            }
+        }, 4000);
+
+        // Console spam for extra annoyance
+        setInterval(() => {
+            console.log('YOU WILL NEVER ESCAPE HAHAHA');
+        }, 1000);
+    </script>
+</body>
+</html>
