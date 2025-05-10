@@ -1,16 +1,55 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="TRAPPED IN FART HELL! Escape this cursed webpage or fart forever. Good luck, loser.">
+    <meta name="description" content="TRAPPED IN FART HELL! Escape this cursed webpage or fart forever. Level 3 insanity.">
     <meta name="keywords" content="fart, escape room, cursed website, broken html, glitchy, annoying">
     <meta name="author" content="Fart Demon">
-    <meta property="og:title" content="FART PRISON ESCAPE">
-    <meta property="og:description" content="A horrible escape room where every click farts and nothing works. Can you escape? Probably not.">
-    <meta property="og:image" content="https://i.giphy.com/media/3o7TKsQ8J3eQ6kZ4y4/giphy.gif">
+    <meta property="og:title" content="FART PRISON ESCAPE - LEVEL 3">
+    <meta property="og:description" content="A horrible escape room where every click farts and nothing works. Can you escape Level 3? No chance.">
+    <meta property="og:image" content="https://i.giphy.com/media/13zeE9HAi7IhO/giphy.gif">
     <meta property="og:type" content="website">
-    <title>FART HELL: NO ESCAPE</title>
+    <title>FART HELL: NO ESCAPE - LEVEL 3</title>
     <style>
         body {
             background: url('https://i.giphy.com/media/13zeE9HAi7IhO/giphy.gif') repeat;
@@ -18,7 +57,35 @@
             color: #ff00ff;
             margin: 0;
             overflow: hidden;
-            cursor: url('https://i.imgur.com/8k9z2.gif'), pointer; /* Broken pixel cursor */
+            cursor: url('https://i.imgur.com/8k9z2.gif'), pointer;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 255, 0.8);
+            color: yellow;
+            text-align: center;
+            padding: 10px;
+            z-index: 200;
+            animation: shake 0.3s infinite;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 30px;
+            text-shadow: 2px 2px cyan;
+        }
+        header button {
+            background: red;
+            color: white;
+            border: 3px dashed yellow;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        header button:hover {
+            background: black;
+            color: red;
+            transform: scale(1.2);
         }
         #game {
             position: absolute;
@@ -120,7 +187,6 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        /* Broken CSS */
         .broken {
             display: inline !important;
             visibility: hidden;
@@ -132,9 +198,36 @@
             user-select: none;
             -webkit-user-select: none;
         }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: cyan;
+            text-align: center;
+            padding: 10px;
+            z-index: 200;
+            font-size: 14px;
+        }
+        footer button {
+            background: purple;
+            color: yellow;
+            border: 3px solid lime;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        footer button:hover {
+            background: black;
+            color: purple;
+            transform: rotate(15deg);
+        }
     </style>
 </head>
 <body>
+    <header>
+        <h1>LEVEL 3: FART HELL</h1>
+        <button onclick="spawnError()">HELP?</button>
+    </header>
     <div id="game">
         <div id="puzzle">
             <h1>FART HELL AWAITS</h1>
@@ -151,6 +244,10 @@
         <div class="meta-clue" style="top: 85%; left: 70%;">INSPECT ELEMENT: 1234?</div>
         <div class="meta-clue" style="top: 50%; left: 50%;">REAL CODE: 5555</div>
     </div>
+    <footer>
+        <p>&copy; 2025 Fart God. All farts reserved.</p>
+        <button onclick="fakeQuit()">QUIT GAME</button>
+    </footer>
 
     <audio id="fart1" src="https://www.soundjay.com/human/fart-01.mp3" volume="1.0"></audio>
     <audio id="fart2" src="https://www.soundjay.com/human/fart-02.mp3" volume="1.0"></audio>
@@ -158,14 +255,13 @@
     <audio id="fart4" src="https://www.soundjay.com/human/fart-04.mp3" volume="1.0"></audio>
 
     <script>
-        // Fart sound setup
         const farts = [
             document.getElementById('fart1'),
             document.getElementById('fart2'),
             document.getElementById('fart3'),
             document.getElementById('fart4')
         ];
-        farts.forEach(f => f.volume = 1.0); // MAX VOLUME FARTS
+        farts.forEach(f => f.volume = 1.0);
 
         function playFart() {
             const fart = farts[Math.floor(Math.random() * farts.length)];
@@ -173,19 +269,15 @@
             fart.play().catch(() => console.log('Fart muted'));
         }
 
-        // Fart on ALL mouse events
         ['click', 'mousemove', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 'contextmenu', 'dblclick'].forEach(event => {
             document.addEventListener(event, playFart);
         });
 
-        // Buggy code checker
         function checkCode() {
             const code = document.getElementById('codeInput').value;
             if (code === '5555') {
-                alert('YOU ESCAPED! OR DID YOU? FART GOD WINS.');
-                document.body.innerHTML = '<h1 style="color:yellow;font-size:120px;text-align:center;">FART GOD LAUGHS</h1>';
-                for (let i = 0; i < 10; i++) spawnError();
-                setTimeout(() => window.location.href = 'about:blank', 3000);
+                alert('LEVEL 3 CLEARED! FART GOD MOCKS YOU! BACK TO LEVEL 1!');
+                window.location.href = 'index.html';
             } else {
                 alert('WRONG CODE, FART SLAVE!');
                 document.getElementById('codeInput').value = 'FART';
@@ -196,7 +288,6 @@
             }
         }
 
-        // Meta troll button
         function metaTroll() {
             alert('META HINT: I LIED. CHECK THE CONSOLE.');
             console.log('FAKE CODE: 0000. REAL CODE IS IN THE DOM... OR IS IT?');
@@ -207,7 +298,6 @@
             spawnError();
         }
 
-        // Fake escape button
         function fakeEscape() {
             alert('NICE TRY, FART PRISONER!');
             document.body.style.filter = 'hue-rotate(180deg)';
@@ -215,7 +305,6 @@
             for (let i = 0; i < 5; i++) spawnError();
         }
 
-        // Spawn error popups
         function spawnError() {
             const error = document.createElement('div');
             error.className = 'error';
@@ -224,9 +313,15 @@
             error.style.top = Math.random() * 80 + 'vh';
             document.body.appendChild(error);
             setTimeout(() => error.remove(), 2500);
+            playFart();
         }
 
-        // Chaos loop
+        function fakeQuit() {
+            alert('YOU’RE TRAPPED FOREVER!');
+            for (let i = 0; i < 5; i++) spawnError();
+            playFart();
+        }
+
         setInterval(() => {
             const puzzle = document.getElementById('puzzle');
             puzzle.style.filter = `blur(${Math.random() * 3}px)`;
@@ -244,7 +339,6 @@
             }
         }, 2000);
 
-        // Annoying meta popups
         setInterval(() => {
             const popup = document.createElement('div');
             popup.className = 'error';
@@ -256,7 +350,6 @@
             setTimeout(() => popup.remove(), 2000);
         }, 1000);
 
-        // Move clues randomly
         setInterval(() => {
             document.querySelectorAll('.meta-clue').forEach(clue => {
                 clue.style.left = Math.random() * 80 + '%';
@@ -264,12 +357,10 @@
             });
         }, 4000);
 
-        // Console spam
         setInterval(() => {
             console.log('FART GOD DEMANDS CODE: ' + ['0000', '1234', '7777', '9999'][Math.floor(Math.random() * 4)]);
         }, 300);
 
-        // Meta comment in source
         // SECRET CODE IS 5555, BUT YOU'LL NEVER FIND IT, LOSER!
     </script>
 </body>
